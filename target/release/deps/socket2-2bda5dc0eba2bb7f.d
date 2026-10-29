@@ -1,0 +1,11 @@
+D:\Projects\rust\panecast-airplay-runtime\target\release\deps\socket2-2bda5dc0eba2bb7f.d: D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\lib.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockaddr.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\socket.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockref.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sys\windows.rs
+
+D:\Projects\rust\panecast-airplay-runtime\target\release\deps\libsocket2-2bda5dc0eba2bb7f.rlib: D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\lib.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockaddr.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\socket.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockref.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sys\windows.rs
+
+D:\Projects\rust\panecast-airplay-runtime\target\release\deps\libsocket2-2bda5dc0eba2bb7f.rmeta: D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\lib.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockaddr.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\socket.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockref.rs D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sys\windows.rs
+
+D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\lib.rs:
+D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockaddr.rs:
+D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\socket.rs:
+D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sockref.rs:
+D:\Environments\cargo\registry\src\mirrors.aliyun.com-0671735e7cc7f5e7\socket2-0.6.5\src\sys\windows.rs:

@@ -34,10 +34,15 @@ function Convert-ToMsysPath {
 $filePackages = @{}
 foreach ($file in Get-ChildItem -LiteralPath $stageUcrt -Recurse -File) {
     if ($file.Extension -notin '.dll', '.exe') { continue }
-    $msys = Convert-ToMsysPath $file.FullName
-    $owned = & $pacman -Qo $msys 2>$null | Select-Object -First 1
-    if ($LASTEXITCODE -eq 0 -and $owned -match '^(.+) is owned by (.+?) (\S+) ([\d\.:\-]+)$') {
-        $filePackages[$file.FullName] = $Matches[2].Trim()
+    # 暂存树按 MSYS2 布局摆放；pacman -Qo 只认识 MSYS2 文件系统内的路径。
+    # 自建文件（uxplay.exe、dnssd.dll）不会被任何包拥有，属正常情况。
+    $relative = $file.FullName.Substring($stageUcrt.Length).TrimStart('\').Replace('\', '/')
+    $msys = "/ucrt64/$relative"
+    $owned = cmd /c "2>nul `"$pacman`" -Qo `"$msys`"" | Select-Object -First 1
+    # “No package owns” 时 stdout 为空，正则自然不匹配。
+    if ($owned -match '^(.+) is owned by (.+)$') {
+        $packageName = ($Matches[2].Trim() -split '\s+')[0]
+        $filePackages[$file.FullName] = $packageName
     }
 }
 
@@ -47,20 +52,31 @@ $licenseDir = Join-Path $RepoRoot 'out/licenses'
 New-Item -ItemType Directory -Path $licenseDir -Force | Out-Null
 
 foreach ($package in $packageNames) {
-    $pkgLicenseDir = Join-Path $Msys2Root "ucrt64/share/licenses/$package"
-    $usrLicenseDir = Join-Path $Msys2Root "usr/share/licenses/$package"
+    # MSYS2 的许可证目录使用去掉 mingw-w64-ucrt-x86_64- 前缀的基础名。
+    $base = $package -replace '^mingw-w64-ucrt-x86_64-', ''
     $licenseSource = $null
-    foreach ($candidate in @($pkgLicenseDir, $usrLicenseDir)) {
+    foreach ($candidate in @(
+        (Join-Path $Msys2Root "ucrt64/share/licenses/$base"),
+        (Join-Path $Msys2Root "usr/share/licenses/$base"),
+        (Join-Path $Msys2Root "ucrt64/share/doc/$base"),
+        (Join-Path $Msys2Root "usr/share/doc/$base")
+    )) {
         if (Test-Path -LiteralPath $candidate) { $licenseSource = $candidate; break }
     }
     if ($licenseSource) {
-        Copy-Item -LiteralPath (Join-Path $licenseSource '*') -Destination $licenseDir -Recurse -Force
+        $target = Join-Path $licenseDir $base
+        New-Item -ItemType Directory -Path $target -Force | Out-Null
+        Copy-Item -Path (Join-Path $licenseSource '*') -Destination $target -Recurse -Force
     }
     $components += [ordered]@{
         package = $package
-        license = if ($licenseSource) { 'see licenses/' } else { 'not captured (see MSYS2 package)' }
+        license = if ($licenseSource) { "licenses/$base/" } else { 'standard GPL/LGPL text (see licenses/)' }
     }
 }
+
+# 仓库自带的标准许可证文本一并进入归档。
+Copy-Item -Path (Join-Path $RepoRoot 'licenses/*') -Destination $licenseDir -Force
+
 
 # 2) Record the per-file manifest (sha256) and the SBOM.
 $files = Get-ChildItem -LiteralPath $stageUcrt -Recurse -File | ForEach-Object {
