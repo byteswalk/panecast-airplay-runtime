@@ -1,0 +1,62 @@
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index 9040c51..5b21081 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -143,24 +143,15 @@ endif()
+ 
+ #dns_sd 
+ if ( NOT APPLE )
++  if ( WIN32 )
++    message( STATUS "dns_sd: using runtime-loaded dnssd.dll compatibility API" )
++  else()
+   pkg_search_module(AVAHI_DNSSD avahi-compat-libdns_sd)
+   if (AVAHI_DNSSD_FOUND)
+     target_include_directories( airplay PRIVATE ${AVAHI_DNSSD_INCLUDE_DIRS} )
+     find_library( DNSSD ${AVAHI_DNSSD_LIBRARIES} PATH ${AVAHI_DNSSD_LIBDIR})
+     target_link_libraries(airplay PUBLIC ${DNSSD} )
+   else()  # can also build if mDNSResponder or another implementation of dns_sd is present instead of Avahi
+-    if ( WIN32 )
+-      if (DEFINED ENV{BONJOUR_SDK_HOME}) 
+-        set(BONJOUR_SDK "$ENV{BONJOUR_SDK_HOME}" )
+-      else()
+-        set(BONJOUR_SDK "C:\\Program Files\\Bonjour SDK")
+-      endif()
+-      message( STATUS "BONJOUR_SDK_HOME " ${BONJOUR_SDK} )
+-      set(DNSSD "${BONJOUR_SDK}/Lib/x64/dnssd.lib")
+-      target_link_libraries(airplay ${DNSSD} )
+-      message( STATUS "dns_sd: using " ${DNSSD} )
+-      find_path(DNSSD_INCLUDE_DIR dns_sd.h HINTS ${BONJOUR_SDK}/Include )
+-    else()
+       find_library( DNSSD dns_sd )
+       if( NOT DNSSD )
+         message( FATAL_ERROR "libdns_sd missing; can be provided by avahi_compat-libdns_sd or mDNSResponder." )
+@@ -169,7 +160,6 @@ if ( NOT APPLE )
+       endif()
+       target_link_libraries(airplay PUBLIC ${DNSSD} ) 
+       find_path(DNSSD_INCLUDE_DIR dns_sd.h HINTS ${CMAKE_INSTALL_INCLUDEDIR} )
+-    endif()
+     if ( NOT DNSSD_INCLUDE_DIR )
+        message( FATAL_ERROR " dns_sd.h not found ")
+      else()
+@@ -177,4 +167,5 @@ if ( NOT APPLE )
+      endif()
+     target_include_directories( airplay PRIVATE ${DNSSD_INCLUDE_DIR} )
+   endif()
++  endif()
+ endif()	
+diff --git a/lib/dnssd.c b/lib/dnssd.c
+index d041ee7..5dabc9b 100644
+--- a/lib/dnssd.c
++++ b/lib/dnssd.c
+@@ -33,7 +33,11 @@
+ #endif
+ 
+ #include "compat.h"
++#ifdef _WIN32
++typedef union _TXTRecordRef_t { char PrivateData[16]; char *ForceNaturalAlignment; } TXTRecordRef;
++#else
+ #include <dns_sd.h>
++#endif
+ #include "dnssd.h"
+ 
+ #include "dnssdint.h"

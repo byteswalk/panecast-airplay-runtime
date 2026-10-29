@@ -1,0 +1,3 @@
+[workspace]
+members = ["dnssd-compat"]
+resolver = "2"

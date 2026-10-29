@@ -1,0 +1,20 @@
+[package]
+name = "panecast-dnssd-compat"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Minimal DNS-SD (dnssd.dll) compatibility layer for UxPlay on Windows, backed by mdns-sd"
+repository = "https://github.com/byteswalk/panecast-airplay-runtime"
+publish = false
+
+[lib]
+name = "dnssd"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+mdns-sd = "0.20.2"
+
+[profile.release]
+# 可复现构建：不嵌入调试路径。
+debug = 0
+strip = "symbols"
